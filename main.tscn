@@ -1,0 +1,169 @@
+[gd_scene load_steps=4 format=3 uid="uid://t510ll0e0o7e"]
+
+[ext_resource type="Script" path="res://main.cs" id="1_oskg3"]
+[ext_resource type="Texture2D" uid="uid://bu7jyruegehsq" path="res://dados/Figuras0001.png" id="2_wryj6"]
+[ext_resource type="Texture2D" uid="uid://b7ukb37mer3um" path="res://icon.svg" id="3_d8qp5"]
+
+[node name="Main" type="Node2D" node_paths=PackedStringArray("sprite2D", "quadradoDebug", "tiro", "timer", "textos1", "textos2")]
+script = ExtResource("1_oskg3")
+sprite2D = NodePath("Sprite2D")
+quadradoDebug = NodePath("QuadradoDebug")
+tiro = NodePath("Tiro")
+timer = NodePath("Timer")
+textos1 = [NodePath("textos/RichTextLabel"), NodePath("textos/RichTextLabel2"), NodePath("textos/RichTextLabel3"), NodePath("textos/RichTextLabel4"), NodePath("textos/RichTextLabel5"), NodePath("textos/RichTextLabel6"), NodePath("textos/RichTextLabel7")]
+textos2 = [NodePath("textos/RichTextLabel8"), NodePath("textos/RichTextLabel9"), NodePath("textos/RichTextLabel10"), NodePath("textos/RichTextLabel11"), NodePath("textos/RichTextLabel12"), NodePath("textos/RichTextLabel13"), NodePath("textos/RichTextLabel14")]
+numPontos = 50
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_wryj6")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(0.25, 0.25)
+
+[node name="Line2D" type="Line2D" parent="."]
+visible = false
+position = Vector2(-739, 187)
+points = PackedVector2Array(-916, -1448, -805, -1448, -805, -1336, -916, -1336, -916, -1448, -798, -1448)
+width = 1.0
+
+[node name="QuadradoDebug" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(-860, -1392)
+scale = Vector2(0.9, 0.9)
+texture = ExtResource("3_d8qp5")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.1
+autostart = true
+
+[node name="Tiro" type="Sprite2D" parent="."]
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("3_d8qp5")
+
+[node name="textos" type="Node2D" parent="."]
+
+[node name="RichTextLabel" type="RichTextLabel" parent="textos"]
+offset_left = 757.0
+offset_top = -1379.0
+offset_right = 921.0
+offset_bottom = -1325.0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/normal_font_size = 38
+text = "0"
+
+[node name="RichTextLabel2" type="RichTextLabel" parent="textos"]
+offset_left = 777.0
+offset_top = -1263.0
+offset_right = 941.0
+offset_bottom = -1209.0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/normal_font_size = 38
+text = "0"
+
+[node name="RichTextLabel3" type="RichTextLabel" parent="textos"]
+offset_left = 897.0
+offset_top = -1142.0
+offset_right = 1061.0
+offset_bottom = -1088.0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/normal_font_size = 38
+text = "0"
+
+[node name="RichTextLabel4" type="RichTextLabel" parent="textos"]
+offset_left = 916.0
+offset_top = -1022.0
+offset_right = 1080.0
+offset_bottom = -968.0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/normal_font_size = 38
+text = "0"
+
+[node name="RichTextLabel5" type="RichTextLabel" parent="textos"]
+offset_left = 379.0
+offset_top = -904.0
+offset_right = 543.0
+offset_bottom = -850.0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/normal_font_size = 38
+text = "0"
+
+[node name="RichTextLabel6" type="RichTextLabel" parent="textos"]
+offset_left = 494.0
+offset_top = -787.0
+offset_right = 658.0
+offset_bottom = -733.0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/normal_font_size = 38
+text = "0"
+
+[node name="RichTextLabel7" type="RichTextLabel" parent="textos"]
+offset_left = 507.0
+offset_top = -667.0
+offset_right = 671.0
+offset_bottom = -613.0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/normal_font_size = 38
+text = "0"
+
+[node name="RichTextLabel8" type="RichTextLabel" parent="textos"]
+offset_left = 743.0
+offset_top = 200.0
+offset_right = 907.0
+offset_bottom = 254.0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/normal_font_size = 38
+text = "0"
+
+[node name="RichTextLabel9" type="RichTextLabel" parent="textos"]
+offset_left = 761.0
+offset_top = 316.0
+offset_right = 925.0
+offset_bottom = 370.0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/normal_font_size = 38
+text = "0"
+
+[node name="RichTextLabel10" type="RichTextLabel" parent="textos"]
+offset_left = 882.0
+offset_top = 435.0
+offset_right = 1046.0
+offset_bottom = 489.0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/normal_font_size = 38
+text = "0"
+
+[node name="RichTextLabel11" type="RichTextLabel" parent="textos"]
+offset_left = 903.0
+offset_top = 551.0
+offset_right = 1067.0
+offset_bottom = 605.0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/normal_font_size = 38
+text = "0"
+
+[node name="RichTextLabel12" type="RichTextLabel" parent="textos"]
+offset_left = 363.0
+offset_top = 666.0
+offset_right = 527.0
+offset_bottom = 720.0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/normal_font_size = 38
+text = "0"
+
+[node name="RichTextLabel13" type="RichTextLabel" parent="textos"]
+offset_left = 482.0
+offset_top = 784.0
+offset_right = 646.0
+offset_bottom = 838.0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/normal_font_size = 38
+text = "0"
+
+[node name="RichTextLabel14" type="RichTextLabel" parent="textos"]
+offset_left = 492.0
+offset_top = 901.0
+offset_right = 656.0
+offset_bottom = 955.0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/normal_font_size = 38
+text = "0"

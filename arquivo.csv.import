@@ -1,0 +1,17 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://wde1i76620qc"
+
+[deps]
+
+files=["res://arquivo.Pixels Internos.translation", "res://arquivo.Pixels Borda.translation", "res://arquivo.Pixels Internos (env. conv).translation", "res://arquivo.Pixels Borda (env. conv).translation", "res://arquivo.Perimetro.translation", "res://arquivo.Diametro Maior.translation", "res://arquivo.Diametro Menor.translation"]
+
+source_file="res://arquivo.csv"
+dest_files=["res://arquivo.Pixels Internos.translation", "res://arquivo.Pixels Borda.translation", "res://arquivo.Pixels Internos (env. conv).translation", "res://arquivo.Pixels Borda (env. conv).translation", "res://arquivo.Perimetro.translation", "res://arquivo.Diametro Maior.translation", "res://arquivo.Diametro Menor.translation"]
+
+[params]
+
+compress=true
+delimiter=0
