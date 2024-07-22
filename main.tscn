@@ -12,7 +12,7 @@ tiro = NodePath("Tiro")
 timer = NodePath("Timer")
 textos1 = [NodePath("textos/RichTextLabel"), NodePath("textos/RichTextLabel2"), NodePath("textos/RichTextLabel3"), NodePath("textos/RichTextLabel4"), NodePath("textos/RichTextLabel5"), NodePath("textos/RichTextLabel6"), NodePath("textos/RichTextLabel7")]
 textos2 = [NodePath("textos/RichTextLabel8"), NodePath("textos/RichTextLabel9"), NodePath("textos/RichTextLabel10"), NodePath("textos/RichTextLabel11"), NodePath("textos/RichTextLabel12"), NodePath("textos/RichTextLabel13"), NodePath("textos/RichTextLabel14")]
-numPontos = 50
+numPontos = 500
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_wryj6")
@@ -37,7 +37,7 @@ wait_time = 0.1
 autostart = true
 
 [node name="Tiro" type="Sprite2D" parent="."]
-scale = Vector2(0.1, 0.1)
+position = Vector2(0.9, 0.9)
 texture = ExtResource("3_d8qp5")
 
 [node name="textos" type="Node2D" parent="."]

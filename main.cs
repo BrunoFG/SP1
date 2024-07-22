@@ -1,5 +1,8 @@
 using Godot;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+
 
 public partial class main : Node2D
 {
@@ -32,20 +35,28 @@ public partial class main : Node2D
     int numPixelsBorda = 0;
     float perimetro = 0;
 
+    bool espera_um_frame = true;
+
 
     public override void _Ready()
     {
         //sprite2D.Texture = GD.Load<Texture2D>("res://dados/Figuras1213.png");
         quadradoDebug.Position = new Vector2(Estaticos.ORIGEMX + (Estaticos.TAMANHO / 2), Estaticos.ORIGEMY + (Estaticos.TAMANHO / 2));
         posicaoInicial = quadradoDebug.Position;
-        //timer.Timeout += HandleTimeout;
-        Daltonista(quadradoDebug.Position - new Vector2((Estaticos.TAMANHO / 2), (Estaticos.TAMANHO / 2)) + new Vector2((Estaticos.TAMANHO + Estaticos.DISTANCIA), 0), 0);
+        timer.Timeout += HandleTimeout;
+        //Daltonista(quadradoDebug.Position - new Vector2((Estaticos.TAMANHO / 2), (Estaticos.TAMANHO / 2)) + new Vector2((Estaticos.TAMANHO + Estaticos.DISTANCIA), 0), 0);
         //GetTree().Quit();
     }
 
 
     private void HandleTimeout()
     {
+        if (espera_um_frame)
+        {
+            espera_um_frame = false;
+            return;
+        }
+
         Auxiliar auxiliar = new();
         //GD.Print('(', linha, ' ', coluna, ')');
         if (coluna < 7)
@@ -88,17 +99,10 @@ public partial class main : Node2D
             numPixelsInternos = 0;
             numPixelsBorda = 0;
             perimetro = 0;
+            var convexos = PixeisConvexos(tabela);
 
-            // string textin = "";
-            // for (int i = 0; i < 8; i++)
-            // {
-            //     for (int j = 0; j < 8; j++)
-            //     {
-            //         textin += tabela[i, j];
-            //     }
-            //     GD.Print(textin);
-            //     textin = "";
-            // }
+            textos1[2].Text = convexos.Item1.ToString();
+            textos1[3].Text = convexos.Item2.ToString();
 
             (diametro[0], diametro[1]) = auxiliar.MedeDiametro(tabela);
             textos1[5].Text = diametro[0].ToString();
@@ -115,6 +119,10 @@ public partial class main : Node2D
             numPixelsInternos = 0;
             numPixelsBorda = 0;
             perimetro = 0;
+            var convexos = PixeisConvexos(tabela);
+
+            textos2[2].Text = convexos.Item1.ToString();
+            textos2[3].Text = convexos.Item2.ToString();
 
             // string textin = "";
             // for (int i = 0; i < 8; i++)
@@ -148,19 +156,23 @@ public partial class main : Node2D
 
                 // Anotar texto1[] e texto2[] no csv
                 stringCsv = numFig.ToString() + ',';
-                for (int i = 0; i < 7; i++){
+                for (int i = 0; i < 7; i++)
+                {
                     stringCsv += textos1[i].Text;
-                    if (i<6){
+                    if (i < 6)
+                    {
                         stringCsv += ",";
                     }
                 }
                 //GD.Print(stringCsv);
                 escritor.GeraCsv(stringCsv);
-                stringCsv = (numFig+1).ToString() + ',';
+                stringCsv = (numFig + 1).ToString() + ',';
 
-                for (int i = 0; i < 7; i++){
+                for (int i = 0; i < 7; i++)
+                {
                     stringCsv += textos2[i].Text;
-                    if (i < 6){
+                    if (i < 6)
+                    {
                         stringCsv += ",";
                     }
                 }
@@ -169,7 +181,8 @@ public partial class main : Node2D
                 // fim
 
 
-                for (int i=0; i<7; i++){
+                for (int i = 0; i < 7; i++)
+                {
                     textos1[i].Text = "0";
                     textos2[i].Text = "0";
                 }
@@ -183,7 +196,8 @@ public partial class main : Node2D
                 else
                 {
                     figRef = numFig.ToString() + (numFig + 1).ToString();
-                    if (figRef == "9697"){
+                    if (figRef == "9697")
+                    {
                         timer.Stop();
                         return;
                     }
@@ -195,8 +209,165 @@ public partial class main : Node2D
         }
     }
 
+    private (int, int) PixeisConvexos(int[,] tabela)
+    {
+        GD.Print("Enxergado pelo Daltonista:");
+        ImprimirTabela(tabela);
+
+        ConvexHull convexHull = new();
+        List<Point> hullPoints = convexHull.ComputeConvexHull(tabela);
+        GD.Print(hullPoints.Count);
+        int[,] envoltoriaTabela = new int[8, 8];
+        //GD.Print("Points in the convex hull:");
+        foreach (var point in hullPoints)
+        {
+            envoltoriaTabela[point.X, point.Y] = 1;
+        }
+        ImprimirTabela(envoltoriaTabela);
+
+        var tabelaPreenchida = PreencherBorda(envoltoriaTabela, hullPoints, 1000);
+
+        GD.Print("Imprimindo tabela  preenchida");
+
+        ImprimirTabela(tabelaPreenchida);
+
+        GD.Print("Imprimindo tabela corrigida");
 
 
+        var tabelaCorrigida = CorrecaoTabela(tabelaPreenchida);
+
+
+        ImprimirTabela(tabelaCorrigida);
+        int pixeisInternos = 0;
+        int pixeisBorda = 0;
+        for (int i = 0; i < 8; i++)
+        {
+            for (int j = 0; j < 8; j++)
+            {
+                if (tabela[i, j] == 2)
+                {
+                    pixeisInternos++;
+                }
+                else if (tabela[i, j] == 1)
+                {
+                    pixeisBorda++;
+                }
+
+            }
+        }
+        return (pixeisInternos, pixeisBorda);
+    }
+
+    private int[,] CorrecaoTabela(int[,] tabela)
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            for (int j = 0; j < 8; j++)
+            {
+                if (tabela[i, j] == 2)
+                {
+                    if (i != 0)
+                    {
+                        if (tabela[i - 1, j] == 0)
+                        {
+                            tabela[i, j] = 1;
+                        }
+                    }
+                    else
+                    {
+                        tabela[i, j] = 1;
+                    }
+
+                    if (i != 7)
+                    {
+                        if (tabela[i + 1, j] == 0)
+                        {
+                            tabela[i, j] = 1;
+                        }
+                    }
+                    else
+                    {
+                        tabela[i, j] = 1;
+                    }
+
+                    if (j != 0)
+                    {
+                        if (tabela[i, j - 1] == 0)
+                        {
+                            tabela[i, j] = 1;
+                        }
+                    }
+                    else
+                    {
+                        tabela[i, j] = 1;
+                    }
+
+                    if (j != 7)
+                    {
+                        if (tabela[i, j + 1] == 0)
+                        {
+                            tabela[i, j] = 1;
+                        }
+                    }
+                    else
+                    {
+                        tabela[i, j] = 1;
+                    }
+
+                }
+            }
+        }
+
+        return tabela;
+    }
+
+    private int[,] PreencherBorda(int[,] envoltoriaTabela, List<Point> pontos, int precisao)
+    {
+
+        foreach (Point p1 in pontos)
+        {
+            foreach (Point p2 in pontos)
+            {
+                if (p1.X != p2.X && p1.Y != p2.Y)
+                {
+                    Vector2 p1temp = new Vector2(p1.X + 0.5f, p1.Y + 0.5f);
+                    Vector2 direcao = new Vector2(((float)p2.X - p1.X) / precisao, ((float)p2.Y - p1.Y) / precisao);
+                    for (int i = 0; i < precisao; i++)
+                    {
+                        p1temp += direcao;
+                        int posX = (int)p1temp.X;
+                        int posY = (int)p1temp.Y;
+                        float deltaX = (float)p1temp.X - posX;
+                        float deltaY = (float)p1temp.Y - posY;
+                        var distance = Math.Sqrt(deltaX * deltaX + deltaY * deltaY);
+
+
+                        if (envoltoriaTabela[posX, posY] != 1 && envoltoriaTabela[posX, posY] != 2 && distance <= 0.75)
+                        {
+                            envoltoriaTabela[posX, posY] = 2;
+                        }
+
+                    }
+                }
+            }
+        }
+        return envoltoriaTabela;
+    }
+
+
+    private void ImprimirTabela(int[,] mat)
+    {
+        string textin = "";
+        for (int i = 0; i < 8; i++)
+        {
+            for (int j = 0; j < 8; j++)
+            {
+                textin += mat[i, j];
+            }
+            GD.Print(textin);
+            textin = "";
+        }
+    }
 
     public void Daltonista(Vector2 posicao, int matriz)
     {
@@ -227,7 +398,7 @@ public partial class main : Node2D
             //tiro.Position = new Vector2(posicao.X + meuRngX, posicao.Y + meuRngY);
         }
 
-        tiro.Position = new Vector2(posicao.X, posicao.Y);
+        tiro.Position = new Vector2(posicao.X + (Estaticos.TAMANHO) / 2, posicao.Y + (Estaticos.TAMANHO) / 2);
         //GD.Print(new Vector2(posicao.X, posicao.Y));
 
         if (vermelho > 0.95 * numPontos)
@@ -248,7 +419,7 @@ public partial class main : Node2D
             numPixelsBorda += 1;
             tabela[linha, coluna] = 1;
             perimetro += (float)resto * 10 / numPontos;
-            perimetro = (float)Math.Round(perimetro,2);
+            perimetro = (float)Math.Round(perimetro, 2);
             if (matriz == 0)
             {
                 textos1[1].Text = numPixelsBorda.ToString();
@@ -261,7 +432,7 @@ public partial class main : Node2D
             }
         }
 
-        GD.Print("(", linha, ",", coluna, ")", ", V=", vermelho, ", B=", branco, ", P=", resto, ", Tot=", vermelho+branco+resto);
+        //GD.Print("(", linha, ",", coluna, ")", ", V=", vermelho, ", B=", branco, ", P=", resto, ", Tot=", vermelho + branco + resto);
     }
 
 
@@ -287,3 +458,29 @@ public partial class main : Node2D
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+// private int[,] PreencherBorda(int[,] envoltoriaTabela, List<Point> pontos, int precisao)
+// {
+//     foreach (Point p1 in pontos)
+//     {
+//         foreach (Point p2 in pontos)
+//         {
+//             if (p1.X != p2.X && p1.Y != p2.Y)
+//             {
+//                 
+//             }
+//         }
+//     }
+//     return envoltoriaTabela;
+// }
